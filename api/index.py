@@ -11,7 +11,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 from PIL import Image
-from HandwritingFunctions import WritePages
+
+try:
+    from api.HandwritingFunctions import WritePages
+except Exception:
+    try:
+        from HandwritingFunctions import WritePages
+    except Exception:
+        from .HandwritingFunctions import WritePages
 
 app = Flask(__name__)
 CORS(app)
