@@ -3,9 +3,15 @@ from flask_cors import CORS, cross_origin
 
 import io
 import base64
+import os
+import sys
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 from PIL import Image
-import HandwritingFunctions
+from HandwritingFunctions import WritePages
 
 app = Flask(__name__)
 CORS(app)
@@ -15,25 +21,6 @@ CORS(app)
 def hello_world():
     return jsonify({"message": "Hello from Flask!"})
 
-
-"""
-@app.route("/api/generate-pages", methods=["POST"])
-@cross_origin()
-def generate_pages():
-
-    data = request.get_json()
-    text = data.get("text")
-
-    writer_obj = HandwritingFunctions.WritePages("testing", text, "", [False, True, True])
-    
-    pages = writer_obj.get_pages()
-
-    return {
-        "message": "Success",
-        "input_id": 
-        "num_pages": len(os.listdir(os.path.join("backend", "testing"))) - 1,
-    }
-"""
 
 GENERATION_CACHE = {}
 
@@ -46,9 +33,7 @@ def get_page():
         page_number = request.args.get("pageNumber", type=int)
 
         if GENERATION_CACHE.get(text) is None:
-            writer_obj = HandwritingFunctions.WritePages(
-                "testing", text, "", [False, True, True]
-            )
+            writer_obj = WritePages("testing", text, "", [False, True, True])
             pages = writer_obj.get_pages()
             GENERATION_CACHE[text] = pages
 
